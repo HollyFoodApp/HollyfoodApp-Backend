@@ -1,5 +1,5 @@
 import express from 'express';
-import { register, login, getAll, getById, updateOnce, deleteOnce } from '../controllers/user.js';
+import { register, login, getAll, getById, updateOnce, deleteOnce, forgotPassword } from '../controllers/user.js';
 import { body } from "express-validator";
 import multer from "../middlewares/multer-config.js";
 
@@ -24,6 +24,7 @@ router
         register
     )
     .patch(
+        multer,
         body("fullname").isLength({ min: 6 }),
         body("fullname").isLength({ max: 30}),
 
@@ -47,6 +48,22 @@ router
 
 router
     .route('/login')
-    .post(login)
+    .post(
+        body("email").isEmail(),
+
+        body("password").isLength({ min: 6 }),
+        body("password").isLength({ max: 30}),
+
+        login
+    )
+
+router
+    .route('/forgotPassword')
+    .post(
+        body("email").isEmail(),
+        
+        forgotPassword
+    )
+
 
 export default router;

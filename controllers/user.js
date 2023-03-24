@@ -15,7 +15,7 @@ export async function register(req,res){
         let user = await User.findOne({email: req.body.email})
 
         if(user){
-            return res.status(409).json({error:"Email already exist"});
+            res.status(409).json({error:"Email already exist"});
         }
         else {
 
@@ -61,22 +61,27 @@ export async function login(req,res){
         });
 
         if(!user){
-            return res.status(404).json({error:"The email you entered is not connected to an account."});
+            res.status(404).json({
+                error:"The email you entered is not connected to an account."
+            });
         }
         else{
-
             const checkPassword = await bcrypt.compare(req.body.password, user.password);
 
             if(!checkPassword){
-                return res.status(401).json({error:"The password you entered is incorrect."});
+                res.status(401).json({
+                    error:"The password you entered is incorrect."
+                });
             }
             else{
                 if(!user.verified){
-                    return res.status(434).json({error:"Your account has not yet been verified."});
+                    res.status(434).json({
+                        error:"Your account has not yet been verified."
+                    });
                 }    
                 else{
                     const token = jwt.sign({_id:user._id}, 'privateKey')
-                    return res.header('x-auth-token', token).status(200).send(user);
+                    res.header('x-auth-token', token).status(200).send(user);
                 }
             }
         }        
@@ -152,5 +157,28 @@ export async function deleteOnce(req,res){
     });
 }
 
+export async function forgotPassword(req,res){
+    var user = await User
+    .findOne({resetPasswordCode:req.body.code})
+    .catch(err=>{
+        res.status(500).json({error:err});
+    });
+
+    if(!user) {
+        res.status(404).json({
+            error:"The email you entered is not connected to an account."
+        });
+    }
+    else {
+        var code = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false });
+        user.resetPasswordCode = code;
+        user.save();
+
+        await sendEmail(user.email, "Reset password code", "This is your reset password code: ", user.resetPasswordCode);
+        res.status(200).send({
+            message:"Reset password code sent successfully."
+        })
+    }  
+}
 
   
