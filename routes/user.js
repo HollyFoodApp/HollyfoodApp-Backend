@@ -9,12 +9,12 @@ router
     .route('/')
     .post(
         multer,
-        body("fullname").isLength({ min: 5 }),
+        body("fullname").isLength({ min: 6 }),
         body("fullname").isLength({ max: 30}),
 
         body("email").isEmail(),
 
-        body("password").isLength({ min: 5 }),
+        body("password").isLength({ min: 6 }),
         body("password").isLength({ max: 30}),
 
         body("phone").isNumeric(),
@@ -24,12 +24,12 @@ router
         register
     )
     .patch(
-        body("fullname").isLength({ min: 5 }),
+        body("fullname").isLength({ min: 6 }),
         body("fullname").isLength({ max: 30}),
 
         body("email").isEmail(),
 
-        body("password").isLength({ min: 5 }),
+        body("password").isLength({ min: 6 }),
         body("password").isLength({ max: 30}),
 
         body("phone").isNumeric(),

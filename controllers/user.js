@@ -1,5 +1,10 @@
 import User from '../models/user.js';
 import { validationResult } from 'express-validator';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import sendEmail from "../middlewares/mailing.js";
+import otpGenerator from "otp-generator";
+
 
 export async function register(req,res){
     if (!validationResult(req).isEmpty()){
@@ -10,7 +15,7 @@ export async function register(req,res){
         let user = await User.findOne({email: req.body.email})
 
         if(user){
-            return res.send('Email Already Exists')
+            return res.status(409).json({error:"Email already exist"});
         }
         else {
 
@@ -21,11 +26,12 @@ export async function register(req,res){
             .create({
                 fullname: req.body.fullname,
                 email: req.body.email,
-                password: req.body.hashedPassword,
+                password: hashedPassword,
                 phone: req.body.phone,
                 role: req.body.role,
-                image: `${req.protocol}://${req.get("host")}/img/${req.file.filename}`,
-                verificationCode: code
+                //image: `${req.protocol}://${req.get("host")}/img/${req.file.filename}`,
+                verificationCode: code,
+                verified: req.body.verified,
             })
             .then(docs=>{
                 sendEmail(req.body.email, "Verify Hollyfood Account", "This is your hollyfood account verification code: ", code);
@@ -48,28 +54,26 @@ export async function login(req,res){
     }
     else{
 
-        let user = await User.findOne({email: req.body.email})
+        let user = await User
+        .findOne({email: req.body.email})
+        .catch(err=>{
+            res.status(500).json({error:err});
+        });
 
         if(!user){
-            return res.send({
-                message:"Invalid Email Or Password"
-            })
+            return res.status(404).json({error:"The email you entered is not connected to an account."});
         }
         else{
 
-            if(!user.verified){
-                return res.send({
-                    message:"Account Not Verified Yet"
-                })
+            const checkPassword = await bcrypt.compare(req.body.password, user.password);
+
+            if(!checkPassword){
+                return res.status(401).json({error:"The password you entered is incorrect."});
             }
             else{
-                const checkPassword = await bcrypt.compare(req.body.password, user.password);
-
-                if(!checkPassword){
-                    return res.send({
-                        message:"Invalid Email Or Password"
-                    })
-                }
+                if(!user.verified){
+                    return res.status(434).json({error:"Your account has not yet been verified."});
+                }    
                 else{
                     const token = jwt.sign({_id:user._id}, 'privateKey')
                     return res.header('x-auth-token', token).status(200).send(user);
@@ -121,9 +125,7 @@ export async function updateOnce(req,res){
                 });
             }
             else{
-                return res.send({
-                    message:"Email Already Exist",
-                })
+                res.status(409).json({error:"Email already exist"});
             }
         }
         else{
@@ -149,4 +151,6 @@ export async function deleteOnce(req,res){
         res.status(500).json({error:err});
     });
 }
+
+
   
