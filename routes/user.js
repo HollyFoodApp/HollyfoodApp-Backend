@@ -1,5 +1,5 @@
 import express from 'express';
-import { register, login, getAll, getById, updateOnce, deleteOnce, forgotPassword } from '../controllers/user.js';
+import { register, login, getAll, getById, updateOnce, deleteOnce, forgotPassword, codeVerification } from '../controllers/user.js';
 import { body } from "express-validator";
 import multer from "../middlewares/multer-config.js";
 
@@ -65,5 +65,8 @@ router
         forgotPassword
     )
 
+router
+    .route('/codeVerification')
+    .post(codeVerification)
 
 export default router;

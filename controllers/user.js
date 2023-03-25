@@ -33,10 +33,10 @@ export async function register(req,res){
                 verificationCode: code,
                 verified: req.body.verified,
             })
-            .then(docs=>{
+            .then(user=>{
                 sendEmail(req.body.email, "Verify Hollyfood Account", "This is your hollyfood account verification code: ", code);
 
-                res.status(201).json(docs);
+                res.status(201).json(user);
             })
             .catch(error=>{
                 res.status(500).json({message:"Server error try again later."});
@@ -91,8 +91,8 @@ export async function login(req,res){
 export async function getAll(req,res){
     await User
     .find({})
-    .then(docs=>{
-        res.status(200).json(docs)
+    .then(user=>{
+        res.status(200).json(user)
     })
     .catch(error=>{
         res.status(500).json({message:"Server error try again later."});
@@ -103,8 +103,8 @@ export async function getAll(req,res){
 export async function getById(req,res){
     await User
     .findById(req.params.id)
-    .then(docs=>{
-        res.status(200).json(docs)
+    .then(user=>{
+        res.status(200).json(user)
     })
     .catch(error=>{
         res.status(500).json({message:"Server error try again later."});
@@ -124,8 +124,8 @@ export async function updateOnce(req,res){
             if(user.email == user2.email){
                 await User
                 .findByIdAndUpdate(req.params.id, req.body, {new:true})
-                .then(docs=>{
-                    res.status(200).json(docs);
+                .then(user=>{
+                    res.status(200).json(user);
                 })
                 .catch(error=>{
                     res.status(500).json({message:"Server error try again later."});
@@ -139,8 +139,8 @@ export async function updateOnce(req,res){
         else {
             await User
             .findByIdAndUpdate(req.params.id, req.body)
-            .then(docs=>{
-                res.status(200).json(docs);
+            .then(user=>{
+                res.status(200).json(user);
             })
             .catch(error=>{
                 res.status(500).json({message:"Server error try again later."});
@@ -153,8 +153,8 @@ export async function updateOnce(req,res){
 export async function deleteOnce(req,res){
     await User
     .findByIdAndDelete(req.params.id)
-    .then(docs=>{
-        res.status(200).json(docs);
+    .then(user=>{
+        res.status(200).json(user);
     })
     .catch(error=>{
         res.status(500).json({message:"Server error try again later."});
@@ -193,4 +193,26 @@ export async function forgotPassword(req,res){
     }
 }
 
-  
+export async function codeVerification(req,res){
+
+    await User
+    .findOne({resetPasswordCode:req.body.code})
+    .then(user=>{
+        if (user) {
+            res.status(200).send({
+                message:'Valid code.'
+            })
+        }
+        else {
+            res.status(404).json({
+                message:"The code you entered doesn't match your code. Please try again."
+            })
+        }
+    })
+    .catch(error=>{
+        res.status(500).json({
+            message:"Server error try again later."
+        });
+        console.log("Server Error: ", error)
+    });
+}
