@@ -7,15 +7,15 @@ import otpGenerator from "otp-generator";
 
 
 export async function register(req,res){
-    if (!validationResult(req).isEmpty()){
+    if (!validationResult(req).isEmpty()) {
         res.status(400).json({errors:validationResult(req).array()});
     }
-    else{
+    else {
 
         let user = await User.findOne({email: req.body.email})
 
-        if(user){
-            res.status(409).json({error:"Email already exist"});
+        if (user) {
+            res.status(409).json({message:"Email already exist."});
         }
         else {
 
@@ -38,45 +38,45 @@ export async function register(req,res){
 
                 res.status(201).json(docs);
             })
-            .catch(err=>{
-                res.status(500).json({error:err});
+            .catch(error=>{
+                res.status(500).json({message:"Server error try again later."});
+                console.log("Server Error: ", error)
             });
-    
-    
         }
     } 
 }
 
 export async function login(req,res){
 
-    if(!validationResult(req).isEmpty()){
+    if (!validationResult(req).isEmpty()) {
         res.status(400).json({errors:validationResult(req).array()});
     }
-    else{
+    else {
 
         let user = await User
         .findOne({email: req.body.email})
-        .catch(err=>{
-            res.status(500).json({error:err});
+        .catch(error=>{
+            res.status(500).json({message:"Server error try again later."});
+            console.log("Server Error: ", error)
         });
 
-        if(!user){
+        if (!user) {
             res.status(404).json({
-                error:"The email you entered is not connected to an account."
+                message:"The email you entered is not connected to an account."
             });
         }
-        else{
+        else {
             const checkPassword = await bcrypt.compare(req.body.password, user.password);
 
             if(!checkPassword){
                 res.status(401).json({
-                    error:"The password you entered is incorrect."
+                    message:"The password you entered is incorrect."
                 });
             }
             else{
                 if(!user.verified){
                     res.status(434).json({
-                        error:"Your account has not yet been verified."
+                        message:"Your account has not yet been verified."
                     });
                 }    
                 else{
@@ -94,8 +94,9 @@ export async function getAll(req,res){
     .then(docs=>{
         res.status(200).json(docs)
     })
-    .catch(err=>{
-        res.status(500).json({error:err});
+    .catch(error=>{
+        res.status(500).json({message:"Server error try again later."});
+        console.log("Server Error: ", error)
     });
 }
 
@@ -105,42 +106,45 @@ export async function getById(req,res){
     .then(docs=>{
         res.status(200).json(docs)
     })
-    .catch(err=>{
-        res.status(500).json({error:err});
+    .catch(error=>{
+        res.status(500).json({message:"Server error try again later."});
+        console.log("Server Error: ", error)
     });
 }
 
 export async function updateOnce(req,res){
-    if (!validationResult(req).isEmpty()){
+    if (!validationResult(req).isEmpty()) {
         res.status(400).json({errors:validationResult(req).array()});
     }
     else {
         let user = await User.findById(req.params.id)
         let user2 = await User.findOne({email: req.body.email})
     
-        if(user2){
+        if (user2) {
             if(user.email == user2.email){
                 await User
                 .findByIdAndUpdate(req.params.id, req.body, {new:true})
                 .then(docs=>{
                     res.status(200).json(docs);
                 })
-                .catch(err=>{
-                    res.status(500).json({error:err});
-                });
+                .catch(error=>{
+                    res.status(500).json({message:"Server error try again later."});
+                    console.log("Server Error: ", error)
+                });    
             }
             else{
-                res.status(409).json({error:"Email already exist"});
+                res.status(409).json({message:"Email already exist"});
             }
         }
-        else{
+        else {
             await User
             .findByIdAndUpdate(req.params.id, req.body)
             .then(docs=>{
                 res.status(200).json(docs);
             })
-            .catch(err=>{
-                res.status(500).json({error:err});
+            .catch(error=>{
+                res.status(500).json({message:"Server error try again later."});
+                console.log("Server Error: ", error)
             });
         }
     } 
@@ -152,33 +156,41 @@ export async function deleteOnce(req,res){
     .then(docs=>{
         res.status(200).json(docs);
     })
-    .catch(err=>{
-        res.status(500).json({error:err});
+    .catch(error=>{
+        res.status(500).json({message:"Server error try again later."});
+        console.log("Server Error: ", error)
     });
 }
 
 export async function forgotPassword(req,res){
-    var user = await User
-    .findOne({resetPasswordCode:req.body.code})
-    .catch(err=>{
-        res.status(500).json({error:err});
-    });
 
-    if(!user) {
-        res.status(404).json({
-            error:"The email you entered is not connected to an account."
-        });
+    if (!validationResult(req).isEmpty()) {
+        res.status(400).json({errors:validationResult(req).array()});
     }
     else {
-        var code = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false });
-        user.resetPasswordCode = code;
-        user.save();
+        var user = await User
+        .findOne({email:req.body.email})
+        .catch(error=>{
+            res.status(500).json({message:"Server error try again later."});
+            console.log("Server Error: ", error)
+        });
 
-        await sendEmail(user.email, "Reset password code", "This is your reset password code: ", user.resetPasswordCode);
-        res.status(200).send({
-            message:"Reset password code sent successfully."
-        })
-    }  
+        if (!user) {
+            res.status(404).json({
+                message:"The email you entered is not connected to an account."
+            });
+        }
+        else {
+            var code = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false });
+            user.resetPasswordCode = code;
+            user.save();
+    
+            await sendEmail(user.email, "Reset password code", "This is your reset password code: ", user.resetPasswordCode);
+            res.status(200).json({
+                message:"Reset password code sent successfully."
+            })
+        }      
+    }
 }
 
   
