@@ -1,5 +1,5 @@
 import express from 'express';
-import { register, login, getAll, getById, updateOnce, deleteOnce, forgotPassword, codeVerification } from '../controllers/user.js';
+import { register, login, getAll, getById, updateOnce, deleteOnce, forgotPassword, codeVerification, resetPassword } from '../controllers/user.js';
 import { body } from "express-validator";
 import multer from "../middlewares/multer-config.js";
 
@@ -68,5 +68,18 @@ router
 router
     .route('/codeVerification')
     .post(codeVerification)
+
+router
+    .route('/resetPassword')
+    .post(
+        body("email").isEmail(),
+        
+        body("password").isLength({ min: 6 }),
+        body("password").isLength({ max: 30}),
+
+        resetPassword
+    )
+
+
 
 export default router;

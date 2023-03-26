@@ -12,8 +12,15 @@ export async function register(req,res){
     }
     else {
 
-        let user = await User.findOne({email: req.body.email})
-
+        let user = await User
+        .findOne({email: req.body.email})
+        .catch(error=>{
+            res.status(500).json({
+                message:"Server error try again later."
+            });
+            console.log("Server Error: ", error)
+        });
+    
         if (user) {
             res.status(409).json({message:"Email already exist."});
         }
@@ -215,4 +222,36 @@ export async function codeVerification(req,res){
         });
         console.log("Server Error: ", error)
     });
+}
+
+export async function resetPassword(req,res){
+
+    if (!validationResult(req).isEmpty()) {
+        res.status(400).json({errors:validationResult(req).array()});
+    }
+    else {
+        var user = await User.findOne({email:req.body.email})
+        .catch(error=>{
+            res.status(500).json({
+                message:"Server error try again later."
+            });
+    
+            console.log("Server Error: ", error)
+        });
+    
+        if (!user) {
+            res.status(404).json({
+                message:'The email you entered is not connected to an account.'
+            })
+        }
+        else {
+            const hashedPassword = await bcrypt.hash(req.body.password, 10)
+            user.password = hashedPassword;
+            user.save();
+    
+            res.status(200).send({
+                message:"Password reset successfully."
+            })
+        }    
+    }
 }
