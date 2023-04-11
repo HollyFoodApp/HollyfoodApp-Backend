@@ -1,7 +1,8 @@
 import express from 'express';
-import { register, login, getAll, getById, updateOnce, deleteOnce, forgotPassword, codeVerification, resetPassword } from '../controllers/user.js';
+import { register, login, getAll, getById, updateOnce, deleteOnce, forgotPassword, codeVerification, resetPassword, verifyAccount } from '../controllers/user.js';
 import { body } from "express-validator";
 import multer from "../middlewares/multer-config.js";
+import { verify } from 'jsonwebtoken';
 
 const router = express.Router();
 
@@ -80,6 +81,13 @@ router
         resetPassword
     )
 
+router
+    .route('/verifyAccount')
+    .post(
+        body("email").isEmail(),
+        
+        verifyAccount
+    )
 
 
 export default router;

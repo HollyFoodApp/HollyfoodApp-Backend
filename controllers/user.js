@@ -255,3 +255,40 @@ export async function resetPassword(req,res){
         }    
     }
 }
+
+export async function verifyAccount(req,res){
+
+    await User
+    .findOne({email:req.body.email})
+    .then(user=>{
+        if(user){
+            if(user.verificationCode == req.body.code)
+            {
+                user.verified = true;
+                user.save();
+                res.status(200).send({
+                    message:"User verified successfully."
+                })    
+            }
+            else
+            {
+                res.status(404).json({
+                    message:"The code you entered doesn't match your code. Please try again."
+                })    
+            }
+        }
+        else
+        {
+            res.status(404).json({
+                message:'User not found.'
+            })
+        }
+    })
+    .catch(error=>{
+        res.status(500).json({
+            message:"Server error try again later."
+        });
+
+        console.log("Server Error: ", error)
+    });
+}
