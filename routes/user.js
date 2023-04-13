@@ -1,5 +1,5 @@
 import express from 'express';
-import { register, login, getAll, getById, updateOnce, deleteOnce, forgotPassword, codeVerification, resetPassword, verifyAccount } from '../controllers/user.js';
+import { register, login, getAll, getById, updateOnce, deleteOnce, forgotPassword, codeVerification, resetPassword, verifyAccount, getByEmail, changePassword} from '../controllers/user.js';
 import { body } from "express-validator";
 import multer from "../middlewares/multer-config.js";
 import { verify } from 'jsonwebtoken';
@@ -24,6 +24,12 @@ router
 
         register
     )
+    .delete(deleteOnce)
+    .get(getAll)
+
+router
+    .route('/:id')
+    .get(getById)
     .patch(
         multer,
         body("fullname").isLength({ min: 6 }),
@@ -31,21 +37,21 @@ router
 
         body("email").isEmail(),
 
-        body("password").isLength({ min: 6 }),
-        body("password").isLength({ max: 30}),
-
         body("phone").isNumeric(),
         body("phone").isLength({ min: 8 }),
         body("phone").isLength({ max: 8 }),
 
         updateOnce
     )
-    .delete(deleteOnce)
-    .get(getAll)
+
 
 router
-    .route('/:id')
-    .get(getById)
+    .route('/getByEmail')
+    .post(
+        body("email").isEmail(),
+        
+        getByEmail
+    )
 
 router
     .route('/login')
@@ -87,6 +93,14 @@ router
         body("email").isEmail(),
         
         verifyAccount
+    )
+
+router
+    .route('/changePassword')
+    .post(
+        body("email").isEmail(),
+        
+        changePassword
     )
 
 

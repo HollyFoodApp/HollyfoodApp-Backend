@@ -119,6 +119,23 @@ export async function getById(req,res){
     });
 }
 
+export async function getByEmail(req,res){
+    if (!validationResult(req).isEmpty()) {
+        res.status(400).json({errors:validationResult(req).array()});
+    }
+    else {
+        await User
+        .findOne({email: req.body.email})
+        .then(user=>{
+            res.status(200).json(user)
+        })
+        .catch(error=>{
+            res.status(500).json({message:"Server error try again later."});
+            console.log("Server Error: ", error)
+        });    
+    }
+}
+
 export async function updateOnce(req,res){
     if (!validationResult(req).isEmpty()) {
         res.status(400).json({errors:validationResult(req).array()});
@@ -291,4 +308,41 @@ export async function verifyAccount(req,res){
 
         console.log("Server Error: ", error)
     });
+}
+
+
+export async function changePassword(req,res){
+
+    var user = await User
+    .findOne({email:req.body.email})
+    .catch(error=>{
+        res.status(500).json({
+            message:"Server error try again later."
+        });
+
+        console.log("Server Error: ", error)
+    });
+
+    if(user) {
+        const checkPassword = await bcrypt.compare(req.body.oldPassword, user.password);
+        if(checkPassword) {
+            const newPassword = await bcrypt.hash(req.body.newPassword, 10)
+            user.password = newPassword;
+            user.save();
+    
+            res.status(200).send({
+                message:"Password changed successfully."
+            })    
+        }
+        else {
+            return res.status(401).send({
+                message:"Wrong password."
+            })
+        }
+    }
+    else {
+        res.status(404).send({
+            message:'User not found.'
+        })
+    }
 }
