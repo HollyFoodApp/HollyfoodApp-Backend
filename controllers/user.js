@@ -59,7 +59,6 @@ export async function login(req,res){
         res.status(400).json({errors:validationResult(req).array()});
     }
     else {
-
         let user = await User
         .findOne({email: req.body.email})
         .catch(error=>{

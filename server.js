@@ -1,5 +1,6 @@
 import express from 'express';
 import userRoutes from './routes/user.js';
+import restaurantRoutes from './routes/restaurant.js';
 
 import mongoose from "mongoose";
 import { errorHandler, notFoundError } from './middlewares/error-handler.js';
@@ -33,6 +34,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/img",express.static("public/images"));
 
 app.use('/users', userRoutes);
+app.use('/restaurants', restaurantRoutes);
 
 //error middlewares
 app.use(notFoundError);
