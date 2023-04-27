@@ -3,7 +3,6 @@ import { validationResult } from 'express-validator';
 import fs from "fs";
 
 export async function addRestaurant(req,res){
-
     if (!validationResult(req).isEmpty()) {
         res.status(400).json({errors:validationResult(req).array()});
     } else {
@@ -13,13 +12,13 @@ export async function addRestaurant(req,res){
             address:req.body.address,
             phoneNumber:req.body.phoneNumber,
             description:req.body.description,
-            image:`${req.protocol}://${req.get("host")}/img/${req.file.filename}`,
+            //image:`${req.protocol}://${req.get("host")}/img/${req.file.filename}`,
             userId:req.body.userId,
         })
         .then(docs=>{
-            res.status(201).json(docs);
+          res.status(201).json(docs);
         })
-        .catch(err=>{
+        .catch(error=>{
           res.status(500).json({message:"Server error try again later."});
           console.log("Server Error: ", error)
         });
@@ -31,14 +30,14 @@ export async function updateRestaurant(req, res) {
       res.status(400).json({ errors: validationResult(req).array() });
     } else {
       const restaurant = await Restaurant.findById(req.params.id);
-      const oldImageFilename = restaurant.image.split("/").pop();
+      //const oldImageFilename = restaurant.image.split("/").pop();
   
       const updatedRestaurant = {
         name: req.body.name,
         address: req.body.address,
         phoneNumber: req.body.phoneNumber,
         description: req.body.description,
-        image: `${req.protocol}://${req.get("host")}/img/${req.file.filename}`,
+        //image: `${req.protocol}://10.0.2.2/img/${req.file.filename}`,
         userId: req.body.userId,
       };
   
@@ -48,11 +47,11 @@ export async function updateRestaurant(req, res) {
         .then((docs) => {
           res.status(200).json(docs);
   
-          fs.unlink(`public/images/${oldImageFilename}`, (err) => {
+          /*fs.unlink(`public/images/${oldImageFilename}`, (err) => {
             if (err) {
               console.error(err);
             }
-          });
+          });*/
         })
         .catch((err) => {
           res.status(500).json({message:"Server error try again later."});
@@ -84,3 +83,29 @@ export async function getAll(req,res){
     console.log("Server Error: ", error)
   });
 }
+
+export async function getByUser(req,res){
+  await Restaurant
+  .find({userId: req.params.userId})
+  .then(docs=>{
+    res.status(200).json(docs)
+  })
+  .catch(error=>{
+    res.status(500).json({message:"Server error try again later."});
+    console.log("Server Error: ", error)
+  });
+}
+
+export async function getById(req,res){
+  await Restaurant
+  .findById(req.params.id)
+  .then(docs=>{
+    res.status(200).json(docs)
+  })
+  .catch(error=>{
+    res.status(500).json({message:"Server error try again later."});
+    console.log("Server Error: ", error)
+  });
+}
+
+

@@ -1,5 +1,5 @@
 import express from 'express';
-import {addRestaurant, updateRestaurant, deleteRestaurant, getAll} from '../controllers/restaurant.js';
+import {addRestaurant, updateRestaurant, deleteRestaurant, getAll, getByUser, getById} from '../controllers/restaurant.js';
 import { body } from "express-validator";
 import multer from "../middlewares/multer-config.js";
 
@@ -8,7 +8,7 @@ const router = express.Router();
 router
     .route('/')
     .post(
-        multer,
+        //multer,
         body("name").isLength({ min: 4 }),
         body("name").isLength({ max: 30}),
 
@@ -29,7 +29,7 @@ router
 router
     .route('/:id')
     .put(
-        multer,
+        //multer,
         body("name").isLength({ min: 4 }),
         body("name").isLength({ max: 30}),
 
@@ -46,5 +46,10 @@ router
         updateRestaurant
     )
     .delete(deleteRestaurant)
+    .get(getById)
+
+router
+    .route('/getByUser/:userId')
+    .get(getByUser)
 
 export default router;
