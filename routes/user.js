@@ -1,5 +1,5 @@
 import express from 'express';
-import { register, login, getAll, getById, updateOnce, deleteOnce, forgotPassword, codeVerification, resetPassword, verifyAccount, getByEmail, changePassword} from '../controllers/user.js';
+import { register, login, getAll, getById, updateUser, deleteUser, forgotPassword, codeVerification, resetPassword, verifyAccount, getByEmail, changePassword} from '../controllers/user.js';
 import { body } from "express-validator";
 import multer from "../middlewares/multer-config.js";
 import { verify } from 'jsonwebtoken';
@@ -24,7 +24,7 @@ router
 
         register
     )
-    .delete(deleteOnce)
+    .delete(deleteUser)
     .get(getAll)
 
 router
@@ -41,7 +41,7 @@ router
         body("phone").isLength({ min: 8 }),
         body("phone").isLength({ max: 8 }),
 
-        updateOnce
+        updateUser
     )
 
 

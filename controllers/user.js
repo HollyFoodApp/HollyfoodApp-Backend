@@ -135,7 +135,7 @@ export async function getByEmail(req,res){
     }
 }
 
-export async function updateOnce(req,res){
+export async function updateUser(req,res){
     if (!validationResult(req).isEmpty()) {
         res.status(400).json({errors:validationResult(req).array()});
     }
@@ -173,7 +173,7 @@ export async function updateOnce(req,res){
     } 
 }
 
-export async function deleteOnce(req,res){
+export async function deleteUser(req,res){
     await User
     .findByIdAndDelete(req.params.id)
     .then(user=>{

@@ -12,7 +12,7 @@ export async function addRestaurant(req,res){
             address:req.body.address,
             phoneNumber:req.body.phoneNumber,
             description:req.body.description,
-            //image:`${req.protocol}://${req.get("host")}/img/${req.file.filename}`,
+            image:`${req.protocol}://${req.get("host")}/img/${req.file.filename}`,
             userId:req.body.userId,
         })
         .then(docs=>{
@@ -37,7 +37,7 @@ export async function updateRestaurant(req, res) {
         address: req.body.address,
         phoneNumber: req.body.phoneNumber,
         description: req.body.description,
-        //image: `${req.protocol}://10.0.2.2/img/${req.file.filename}`,
+        //image:`${req.protocol}://${req.get("host")}/img/${req.file.filename}`,
         userId: req.body.userId,
       };
   
@@ -46,7 +46,7 @@ export async function updateRestaurant(req, res) {
       })
         .then((docs) => {
           res.status(200).json(docs);
-  
+
           /*fs.unlink(`public/images/${oldImageFilename}`, (err) => {
             if (err) {
               console.error(err);

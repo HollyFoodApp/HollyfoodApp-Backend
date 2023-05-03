@@ -8,7 +8,7 @@ const router = express.Router();
 router
     .route('/')
     .post(
-        //multer,
+        multer,
         body("name").isLength({ min: 4 }),
         body("name").isLength({ max: 30}),
 
@@ -29,7 +29,7 @@ router
 router
     .route('/:id')
     .put(
-        //multer,
+        multer,
         body("name").isLength({ min: 4 }),
         body("name").isLength({ max: 30}),
 
