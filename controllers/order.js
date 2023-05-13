@@ -1,4 +1,5 @@
 import Order from '../models/order.js';
+import Orderline from '../models/orderline.js';
 import { validationResult } from 'express-validator';
 
 export async function addOrder(req,res){
@@ -8,8 +9,12 @@ export async function addOrder(req,res){
         await Order
         .create({
             price:req.body.price,
+            address:req.body.address,
+            phoneNumber:req.body.phoneNumber,
+            date:req.body.date,
             userId:req.body.userId,
             restaurantId:req.body.restaurantId,
+            restaurantName:req.body.restaurantName
         })
         .then(docs=>{
           res.status(201).json(docs);

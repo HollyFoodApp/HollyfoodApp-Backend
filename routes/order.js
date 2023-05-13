@@ -8,7 +8,12 @@ router
     .route('/')
     .post(
         body("price").isNumeric(),
-        
+
+        body("address").isLength({ min: 4 }),
+        body("address").isLength({ max: 30}),
+
+        body("phoneNumber").isNumeric(),
+
         addOrder
     )
     .get(getAll)

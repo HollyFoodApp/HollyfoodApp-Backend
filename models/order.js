@@ -5,17 +5,33 @@ const orderSchema = new Schema(
     {
         price:{
             type: Number,
-            required
+            required:true
+        },
+        address:{
+            type: String,
+            required:true
+        },
+        phoneNumber:{
+            type: Number,
+            required:true
+        },
+        date:{
+            type: String,
+            required:true
         },
         userId:{
             type:mongoose.Schema.Types.ObjectId,
             ref:'User',
-            required
+            required:true
         },
         restaurantId:{
             type:mongoose.Schema.Types.ObjectId,
             ref:'Restaurant',
-            required
+            required:true
+        },
+        restaurantName:{
+            type: String,
+            required:true
         }
     }
 );

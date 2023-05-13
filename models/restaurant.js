@@ -22,6 +22,15 @@ const restaurantSchema = new Schema(
         image:{
             type: String
         },
+        rating:{
+            type: Number
+        },
+        lat:{
+            type: Number
+        },
+        long:{
+            type: Number
+        },
         userId:{
             type:mongoose.Schema.Types.ObjectId,
             ref:"User",

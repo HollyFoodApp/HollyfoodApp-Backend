@@ -9,11 +9,12 @@ export async function addOrderline(req,res){
         .create({
             quantity:req.body.quantity,
             price:req.body.price,
-            plateId:req.body.plateId,
             orderId:req.body.orderId,
+            plateId:req.body.plateId,
             plateName:req.body.plateName,
             plateCategory:req.body.plateCategory,
-            plateImage:req.body.plateImage
+            plateImage:req.body.plateImage,
+            unitPrice:req.body.unitPrice
         })
         .then(docs=>{
           res.status(201).json(docs);

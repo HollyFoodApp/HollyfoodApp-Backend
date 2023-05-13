@@ -11,14 +11,14 @@ const orderlineSchema = new Schema(
             type: Number,
             required:true
         },
-        plateId:{
-            type:mongoose.Schema.Types.ObjectId,
-            ref:'Plate',
-            required:true
-        },
         orderId:{
             type:mongoose.Schema.Types.ObjectId,
             ref:'Order',
+            required:true
+        },
+        plateId:{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:'Plate',
             required:true
         },
         plateName:{
@@ -29,6 +29,9 @@ const orderlineSchema = new Schema(
         },
         plateImage:{
             type: String
+        },
+        unitPrice:{
+            type: Number
         }
     }
 );

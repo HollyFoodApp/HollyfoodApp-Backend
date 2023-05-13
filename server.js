@@ -4,6 +4,7 @@ import restaurantRoutes from './routes/restaurant.js';
 import plateRoutes from './routes/plate.js';
 import orderRoutes from './routes/order.js';
 import orderlineRoutes from './routes/orderline.js';
+import ratingRoutes from './routes/rating.js';
 
 import mongoose from "mongoose";
 import { errorHandler, notFoundError } from './middlewares/error-handler.js';
@@ -41,6 +42,7 @@ app.use('/restaurants', restaurantRoutes);
 app.use('/plates', plateRoutes);
 app.use('/orders', orderRoutes);
 app.use('/orderlines', orderlineRoutes);
+app.use('/rating', ratingRoutes);
 
 //error middlewares
 app.use(notFoundError);
