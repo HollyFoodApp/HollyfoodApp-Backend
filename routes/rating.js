@@ -5,7 +5,7 @@ import { body } from "express-validator";
 const router = express.Router();
 
 router
-    .route('/:restaurantId')
+    .route('/')
     .post(
         body("rating").isNumeric(),
         addOrUpdateRating

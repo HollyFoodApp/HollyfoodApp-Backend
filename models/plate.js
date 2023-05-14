@@ -23,6 +23,11 @@ const plateSchema = new Schema(
             type:mongoose.Schema.Types.ObjectId,
             ref:"Restaurant",
             required:true
+        },
+        userId:{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:"User",
+            required:true
         }
     }
 );

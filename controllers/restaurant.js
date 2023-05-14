@@ -13,7 +13,7 @@ export async function addRestaurant(req,res){
           phoneNumber:req.body.phoneNumber,
           description:req.body.description,
           image:`${req.protocol}://${req.get("host")}/img/${req.file.filename}`,
-          rating:0,
+          rating:req.body.rating,
           lat:req.body.lat,
           long:req.body.long,
           userId:req.body.userId,
@@ -56,7 +56,7 @@ export async function updateRestaurant(req, res) {
             }
           });*/
         })
-        .catch((err) => {
+        .catch((error) => {
           res.status(500).json({message:"Server error try again later."});
           console.log("Server Error: ", error)
         });
@@ -111,37 +111,6 @@ export async function getById(req,res){
   });
 }
 
-export async function calculateAverageRating(req, res) {
-  const restaurant =  await Restaurant
-  .findById(req.params.restaurantId)
-  .catch(error=>{
-    res.status(500).json({message:"Server error try again later."});
-    console.log("Server Error: ", error)
-  });
-
-  const ratings = await Rating
-  .find({ restaurantId: req.params.restaurantId })
-  .catch(error=>{
-    res.status(500).json({message:"Server error try again later."});
-    console.log("Server Error: ", error)
-  });
-
-  const count = ratings.length;
-  let total = 0;
-  for (let i = 0; i < count; i++) {
-    total += ratings[i].rating;
-  }
-  const average = count > 0 ? total / count : 0;
-  restaurant.rating = average
-  await restaurant.save()
-  .then(user=>{
-    res.status(200).json(restaurant)
-  })
-  .catch(error=>{
-    res.status(500).json({message:"Server error try again later."});
-    console.log("Server Error: ", error)
-  });
-}
 
 
 

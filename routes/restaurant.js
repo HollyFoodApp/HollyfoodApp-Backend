@@ -1,5 +1,5 @@
 import express from 'express';
-import {addRestaurant, updateRestaurant, deleteRestaurant, getAll, getByUser, getById, calculateAverageRating} from '../controllers/restaurant.js';
+import {addRestaurant, updateRestaurant, deleteRestaurant, getAll, getByUser, getById} from '../controllers/restaurant.js';
 import { body } from "express-validator";
 import multer from "../middlewares/multer-config.js";
 
@@ -56,8 +56,5 @@ router
     .route('/getByUser/:userId')
     .get(getByUser)
 
-router
-    .route('/calculateAverageRating/:restaurantId')
-    .post(calculateAverageRating)
 
 export default router;

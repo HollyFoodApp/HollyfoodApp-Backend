@@ -12,6 +12,7 @@ export async function addPlate(req,res){
             price:req.body.price,
             image:`${req.protocol}://${req.get("host")}/img/${req.file.filename}`,
             restaurantId:req.body.restaurantId,
+            userId:req.body.userId,
         })
         .then(docs=>{
           res.status(201).json(docs);
@@ -21,6 +22,41 @@ export async function addPlate(req,res){
           console.log("Server Error: ", error)
         });
     } 
+}
+
+export async function updatePlate(req, res) {
+    if (!validationResult(req).isEmpty()) {
+      res.status(400).json({ errors: validationResult(req).array() });
+    } else {
+      const plate = await Plate.findById(req.params.id);
+      //const oldImageFilename = plate.image.split("/").pop();
+  
+      const updatedPlate = {
+        name:req.body.name,
+        category:req.body.category,
+        price:req.body.price,
+        //image:`${req.protocol}://${req.get("host")}/img/${req.file.filename}`,
+        restaurantId:req.body.restaurantId,
+        userId:req.body.userId,
+      };
+  
+      await Plate.findByIdAndUpdate(req.params.id, updatedPlate, {
+        new: true,
+      })
+        .then((docs) => {
+            res.status(200).json(docs);
+
+            /*fs.unlink(`public/images/${oldImageFilename}`, (err) => {
+            if (err) {
+                console.error(err);
+            }
+            });*/
+        })
+        .catch((error) => {
+            res.status(500).json({message:"Server error try again later."});
+            console.log("Server Error: ", error)
+        });
+    }
 }
 
 export async function getAll(req,res){

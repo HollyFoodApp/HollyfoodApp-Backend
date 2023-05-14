@@ -1,5 +1,5 @@
 import express from 'express';
-import { addPlate, getAll, getByRestaurant, getById, deletePlate } from '../controllers/plate.js';
+import { addPlate, updatePlate, getAll, getByRestaurant, getById, deletePlate } from '../controllers/plate.js';
 import { body } from "express-validator";
 import multer from "../middlewares/multer-config.js";
 import { verify } from 'jsonwebtoken';
@@ -20,13 +20,24 @@ router
 
         addPlate
     )
-    .delete(deletePlate)
     .get(getAll)
 
 router
     .route('/:id')
-    .get(getById)
+    .put(
+        multer,
+        body("name").isLength({ min: 4 }),
+        body("name").isLength({ max: 30}),
 
+        body("category").isLength({ min: 4 }),
+        body("category").isLength({ max: 30}),
+
+        body("price").isNumeric(),
+
+        updatePlate
+    )
+    .get(getById)
+    .delete(deletePlate)
 
 router
     .route('/getByRestaurant/:restaurantId')

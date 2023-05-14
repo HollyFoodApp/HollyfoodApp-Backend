@@ -1,7 +1,5 @@
 import Rating from '../models/rating.js';
 import Restaurant from '../models/restaurant.js';
-import {calculateAverageRating} from '../controllers/restaurant.js';
-
 import { validationResult } from 'express-validator';
 
 export async function addOrUpdateRating(req, res) {
@@ -11,7 +9,7 @@ export async function addOrUpdateRating(req, res) {
     } else {
         const existingRating = await Rating.findOne({
             userId: req.body.userId,
-            restaurantId: req.params.restaurantId,
+            restaurantId: req.body.restaurantId,
         });
 
         if (existingRating) {
@@ -23,14 +21,14 @@ export async function addOrUpdateRating(req, res) {
             });
 
             const restaurant =  await Restaurant
-            .findById(req.params.restaurantId)
+            .findById(req.body.restaurantId)
             .catch(error=>{
               res.status(500).json({message:"Server error try again later."});
               console.log("Server Error: ", error)
             });
           
             const ratings = await Rating
-            .find({ restaurantId: req.params.restaurantId })
+            .find({ restaurantId: req.body.restaurantId })
             .catch(error=>{
               res.status(500).json({message:"Server error try again later."});
               console.log("Server Error: ", error)
@@ -56,7 +54,7 @@ export async function addOrUpdateRating(req, res) {
             const newRating = await Rating.create({
                 rating: req.body.rating,
                 userId: req.body.userId,
-                restaurantId: req.params.restaurantId,
+                restaurantId: req.body.restaurantId,
             })
             .catch(error => {
                 res.status(500).json({ message: "Server error try again later." });
@@ -64,14 +62,14 @@ export async function addOrUpdateRating(req, res) {
             });
 
             const restaurant =  await Restaurant
-            .findById(req.params.restaurantId)
+            .findById(req.body.restaurantId)
             .catch(error=>{
               res.status(500).json({message:"Server error try again later."});
               console.log("Server Error: ", error)
             });
           
             const ratings = await Rating
-            .find({ restaurantId: req.params.restaurantId })
+            .find({ restaurantId: req.body.restaurantId })
             .catch(error=>{
               res.status(500).json({message:"Server error try again later."});
               console.log("Server Error: ", error)
@@ -96,4 +94,3 @@ export async function addOrUpdateRating(req, res) {
         }      
     } 
 }
-  
