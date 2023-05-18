@@ -1,8 +1,7 @@
 import express from 'express';
-import { addPlate, updatePlate, getAll, getByRestaurant, getById, deletePlate } from '../controllers/plate.js';
+import { addPlate, editPlate, getAll, getByRestaurant, getById, deletePlate } from '../controllers/plate.js';
 import { body } from "express-validator";
 import multer from "../middlewares/multer-config.js";
-import { verify } from 'jsonwebtoken';
 
 const router = express.Router();
 
@@ -34,7 +33,7 @@ router
 
         body("price").isNumeric(),
 
-        updatePlate
+        editPlate
     )
     .get(getById)
     .delete(deletePlate)

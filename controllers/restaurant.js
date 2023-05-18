@@ -28,7 +28,7 @@ export async function addRestaurant(req,res){
     } 
 }
 
-export async function updateRestaurant(req, res) {
+export async function editRestaurant(req, res) {
     if (!validationResult(req).isEmpty()) {
       res.status(400).json({ errors: validationResult(req).array() });
     } else {

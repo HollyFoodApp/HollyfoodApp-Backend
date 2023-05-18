@@ -27,7 +27,7 @@ export async function addOrderline(req,res){
 }
   
 export async function getByOrder(req,res){
-  await Order
+  await Orderline
   .find({orderId: req.params.orderId})
   .then(docs=>{
     res.status(200).json(docs)

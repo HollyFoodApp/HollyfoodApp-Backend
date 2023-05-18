@@ -24,7 +24,7 @@ export async function addPlate(req,res){
     } 
 }
 
-export async function updatePlate(req, res) {
+export async function editPlate(req, res) {
     if (!validationResult(req).isEmpty()) {
       res.status(400).json({ errors: validationResult(req).array() });
     } else {
@@ -98,8 +98,8 @@ export async function getById(req,res){
 export async function deletePlate(req,res){
     await Plate
     .findByIdAndDelete(req.params.id)
-    .then(user=>{
-        res.status(200).json(user);
+    .then(docs=>{
+        res.status(200).json(docs);
     })
     .catch(error=>{
         res.status(500).json({message:"Server error try again later."});

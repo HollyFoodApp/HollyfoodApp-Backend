@@ -1,5 +1,5 @@
 import express from 'express';
-import {addRestaurant, updateRestaurant, deleteRestaurant, getAll, getByUser, getById} from '../controllers/restaurant.js';
+import {addRestaurant, editRestaurant, deleteRestaurant, getAll, getByUser, getById} from '../controllers/restaurant.js';
 import { body } from "express-validator";
 import multer from "../middlewares/multer-config.js";
 
@@ -47,7 +47,7 @@ router
         body("description").isLength({ min: 4 }),
         body("description").isLength({ max: 30}),
 
-        updateRestaurant
+        editRestaurant
     )
     .delete(deleteRestaurant)
     .get(getById)
